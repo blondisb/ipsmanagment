@@ -7,13 +7,12 @@ from config import settings
 
 app = FastAPI(
     title="Medical Appointment API",
-    description="Microservicio para gestión de pacientes y citas médicas",
     version="1.0.0"
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -33,6 +32,14 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 @app.get("/")
 async def root():
     return {"message": "Medical Appointment API"}
+
+# Include routers
+app.include_router(
+    patients.router,
+    prefix="/api/v1/patients",
+    tags=["Pacientes"],
+    dependencies=[Depends(get_current_user)]
+)
 
 if __name__ == "__main__":
     import uvicorn
