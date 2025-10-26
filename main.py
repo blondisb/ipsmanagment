@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from utils.security import verify_token
+from config import settings
 
 
 app = FastAPI(
@@ -29,7 +30,9 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     return payload
 
 
-
+@app.get("/")
+async def root():
+    return {"message": "Medical Appointment API"}
 
 if __name__ == "__main__":
     import uvicorn
